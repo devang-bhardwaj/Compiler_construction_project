@@ -1,0 +1,465 @@
+Below is a structured, industry-style blueprint for building the Intermediate Code Optimizer project with a futuristic developer-tool UI. This is written like a real internal engineering document so you can directly use it for development, portfolio, or academic submission.
+
+Intermediate Code Optimizer
+
+Product Requirements Document (PRD) + System Architecture
+
+1. Product Overview
+Product Name
+
+Intermediate Code Optimizer (ICO)
+
+Vision
+
+Build a developer tool that analyzes intermediate code (IR / three-address code / pseudo-IR) and performs compiler optimization techniques while providing interactive visualization and explanations.
+
+Problem Statement
+
+When students or developers study compilers, they usually struggle to understand optimization techniques applied on intermediate representations such as:
+
+Constant Folding
+
+Dead Code Elimination
+
+Common Subexpression Elimination
+
+Strength Reduction
+
+Most compiler tools run these optimizations silently.
+
+The Intermediate Code Optimizer provides:
+
+✔ Visual transformation of code
+✔ Step-by-step optimization passes
+✔ Graphical control flow visualization
+✔ Performance metrics comparison
+
+2. Product Goals
+Primary Goals
+
+Accept intermediate code input
+
+Apply classical compiler optimizations
+
+Display optimized code
+
+Show optimization steps
+
+Visualize control flow graph
+
+Secondary Goals
+
+Educational insights
+
+Developer debugging tool
+
+Visualization of compiler internals
+
+3. Target Users
+User Type	Use Case
+CS Students	Learning compiler optimizations
+Compiler Engineers	Testing optimization passes
+Educators	Demonstrating compiler concepts
+Developers	Understanding code efficiency
+4. Core Features
+4.1 Code Input System
+
+Users can paste or upload intermediate code.
+
+Supported formats:
+
+t1 = a + b
+t2 = t1 * 2
+t3 = a + b
+if t2 > 10 goto L1
+
+Features:
+
+Syntax highlighting
+
+Auto formatting
+
+IR validation
+
+4.2 Optimization Engine
+
+The system will perform optimization passes.
+
+Passes
+Optimization	Description
+Constant Folding	Evaluate constant expressions
+Constant Propagation	Replace variables with known constants
+Dead Code Elimination	Remove unused instructions
+Common Subexpression Elimination	Avoid repeated calculations
+Strength Reduction	Replace expensive operations
+Copy Propagation	Replace redundant copies
+4.3 Optimization Pipeline
+
+Users can run:
+
+Single optimization
+
+Full pipeline
+
+Example pipeline:
+
+Parse IR
+↓
+Build Symbol Table
+↓
+Build CFG
+↓
+Run Optimization Passes
+↓
+Generate Optimized IR
+4.4 Step-by-Step Visualization
+
+Each pass shows:
+
+Before Optimization
+↓
+Transformation Applied
+↓
+After Optimization
+
+Example:
+
+Before
+
+t1 = a + b
+t2 = a + b
+
+After CSE
+
+t1 = a + b
+t2 = t1
+4.5 Control Flow Graph (CFG) Visualization
+
+System generates graph:
+
+Nodes → basic blocks
+Edges → control flow
+
+Example
+
+[Block1] -> [Block2]
+   |           |
+   v           v
+[Block3] -> [Block4]
+
+Rendered visually.
+
+4.6 Performance Metrics
+
+Show improvement metrics:
+
+Metric	Before	After
+Instructions	15	9
+Redundant Ops	4	0
+Estimated cost	42	25
+4.7 Optimization Report
+
+Generated report includes:
+
+Optimizations applied
+
+Instructions removed
+
+Efficiency score
+
+5. UI / UX Design (Futuristic Look)
+
+The UI should resemble modern AI developer tools like:
+
+VS Code
+
+Linear
+
+Raycast
+
+Vercel dashboard
+
+Design Style
+
+Dark theme
+
+Neon highlights
+
+Glassmorphism
+
+Animated transitions
+
+Code-first interface
+
+UI Layout
+Main Layout
+-----------------------------------------------------
+| Header (Project Name + Controls)                  |
+-----------------------------------------------------
+| Code Editor | Optimization Steps | Visualization  |
+|             |                    |                 |
+|             |                    |                 |
+-----------------------------------------------------
+| Output Panel (Optimized Code + Metrics)           |
+-----------------------------------------------------
+UI Components
+Code Editor
+
+Monaco editor
+
+Syntax highlighting
+
+IR grammar
+
+Optimization Timeline
+
+Shows:
+
+Pass 1: Constant Folding
+Pass 2: Copy Propagation
+Pass 3: Dead Code Elimination
+Visualization Panel
+
+Displays:
+
+Control Flow Graph
+
+Data Flow Graph
+
+Optimization diffs
+
+6. System Architecture
+High Level Architecture
+                Frontend (React)
+                       |
+                       |
+                API Gateway
+                       |
+          ----------------------------
+          |                          |
+   Optimization Engine          Graph Engine
+          |                          |
+          |                          |
+       IR Parser                CFG Builder
+          |
+          |
+      Optimization Passes
+7. Technology Stack
+Frontend
+Tech	Purpose
+React / Next.js	UI framework
+Monaco Editor	Code editor
+TailwindCSS	Styling
+Framer Motion	Animations
+D3.js	Graph visualization
+Backend
+Tech	Purpose
+Python / FastAPI	Backend service
+NetworkX	Graph building
+Pydantic	Validation
+Optimization Engine
+
+Custom Python modules:
+
+optimizer/
+ ├── parser.py
+ ├── cfg_builder.py
+ ├── constant_folding.py
+ ├── dead_code_elimination.py
+ ├── cse.py
+ ├── strength_reduction.py
+8. Detailed System Design
+IR Parser
+
+Responsibilities:
+
+Parse code
+
+Tokenize instructions
+
+Build instruction objects
+
+Example structure:
+
+Instruction {
+   op
+   arg1
+   arg2
+   result
+}
+Basic Block Builder
+
+Groups instructions.
+
+Example
+
+Block 1:
+t1 = a + b
+t2 = t1 * 2
+
+Block 2:
+if t2 > 10 goto L1
+Control Flow Graph Builder
+
+Uses graph nodes:
+
+Node: BasicBlock
+Edge: Control flow
+Optimization Pass Manager
+
+Pipeline manager.
+
+class OptimizationPipeline:
+
+   passes = [
+      ConstantFolding(),
+      CopyPropagation(),
+      CSE(),
+      DeadCodeElimination()
+   ]
+9. API Design
+POST /optimize
+
+Input:
+
+{
+ "code": "...",
+ "optimizations": ["constant_folding","cse"]
+}
+
+Output
+
+{
+ "optimized_code": "...",
+ "steps": [...],
+ "metrics": {...}
+}
+POST /generate-cfg
+{
+ "code": "..."
+}
+
+Returns graph structure.
+
+10. Data Flow
+User Inputs Code
+        |
+Frontend sends API request
+        |
+Backend parses IR
+        |
+Build CFG
+        |
+Run optimization passes
+        |
+Generate results
+        |
+Return optimized IR
+        |
+Frontend renders visualization
+11. Project Folder Structure
+intermediate-code-optimizer
+│
+├── frontend
+│   ├── components
+│   ├── editor
+│   ├── graphs
+│   ├── pages
+│   └── styles
+│
+├── backend
+│   ├── api
+│   ├── optimizer
+│   ├── parser
+│   ├── cfg
+│   └── models
+│
+├── docs
+│   ├── architecture.md
+│   └── prd.md
+│
+└── tests
+12. Development Phases
+Phase 1 — MVP
+
+✔ Code input
+✔ IR parser
+✔ Constant folding
+✔ Optimized output
+
+Phase 2 — Optimization Engine
+
+✔ Multiple passes
+✔ Pipeline execution
+✔ Metrics
+
+Phase 3 — Visualization
+
+✔ CFG generation
+✔ Graph UI
+
+Phase 4 — UI Polish
+
+✔ Futuristic UI
+✔ Animation
+✔ Step visualization
+
+13. Future Enhancements
+Advanced Compiler Features
+
+SSA conversion
+
+Loop optimization
+
+Register allocation
+
+Data flow analysis
+
+Liveness analysis
+
+AI Integration
+
+AI explanation of optimizations:
+
+"Dead code removed because variable t3 was never used."
+IDE Plugin
+
+Extension for:
+
+VS Code
+
+JetBrains
+
+14. Example Input & Output
+Input
+t1 = a + b
+t2 = a + b
+t3 = t2 * 2
+Output
+t1 = a + b
+t2 = t1
+t3 = t2 * 2
+
+Optimization:
+
+Common Subexpression Elimination
+15. Success Metrics
+Metric	Target
+Optimization correctness	100%
+Execution latency	<100ms
+UI interaction time	<50ms
+Optimization coverage	6+ techniques
+16. Risks
+Risk	Mitigation
+Incorrect optimizations	Unit tests
+IR parsing errors	Strict grammar
+Graph complexity	Node limit
+17. Deliverables
+
+Final project includes:
+
+✔ Working web application
+✔ Optimization engine
+✔ Visualization system
+✔ Documentation
+✔ Demo examples
